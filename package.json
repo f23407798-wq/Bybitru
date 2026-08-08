@@ -1,14 +1,18 @@
 {
-  "name": "bybit-auto-scanner",
+  "name": "bybit-auto-scanner-site",
   "version": "1.0.0",
-  "description": "Automated EMA/RSI/Fib SELL-signal scanner + live Bybit USDT Perpetual (linear) market order execution.",
-  "main": "index.js",
+  "description": "Always-on Bybit scanner with a login-protected web dashboard (ON/OFF toggle, live signal/trade log).",
+  "main": "server.js",
   "type": "commonjs",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-session": "^1.18.0"
   },
   "license": "UNLICENSED",
   "private": true
