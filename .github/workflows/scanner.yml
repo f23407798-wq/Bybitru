@@ -1,0 +1,37 @@
+name: Bybit Auto Scanner
+
+on:
+  schedule:
+    # Every 15 minutes. GitHub's scheduler is best-effort and can lag by
+    # several minutes under load — fine for 15m/1h/4h/1d, NOT reliable
+    # enough for 1m/5m scalping. Change the cron + INTERVAL together.
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {} # lets you trigger a run manually from the Actions tab
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: npm install --omit=dev
+
+      - name: Run scanner
+        env:
+          BYBIT_API_KEY: ${{ secrets.BYBIT_API_KEY }}
+          BYBIT_API_SECRET: ${{ secrets.BYBIT_API_SECRET }}
+          BYBIT_TESTNET: ${{ vars.BYBIT_TESTNET || 'false' }}
+          TOP_N: ${{ vars.TOP_N || '100' }}
+          INTERVAL: ${{ vars.INTERVAL || '15m' }}
+          REQUIRE_CLEAN_LINE: ${{ vars.REQUIRE_CLEAN_LINE || 'true' }}
+          MARGIN_USDT: ${{ vars.MARGIN_USDT || '25' }}
+          LEVERAGE: ${{ vars.LEVERAGE || '5' }}
+          DRY_RUN: ${{ vars.DRY_RUN || 'true' }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node index.js
